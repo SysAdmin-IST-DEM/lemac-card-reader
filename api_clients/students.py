@@ -21,7 +21,7 @@ headers = {
 }
 
 def fetch_active_entry(card_id: int):
-    return requests.get(BASE_API_URL + "reader/active-entry", json={"mifareNumber": card_id}, headers=headers)
+    return requests.get(BASE_API_URL + "reader/active-entry", json={"mifareNumber": str(card_id)}, headers=headers)
 
 def add_entry(ist_id: str, workstation_id: int):
     return requests.post(BASE_API_URL + "reader/add-entry", json={"istId": ist_id, "workstationId": workstation_id},
