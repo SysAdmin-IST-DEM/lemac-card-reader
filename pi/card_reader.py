@@ -36,7 +36,7 @@ class CardScanner(threading.Thread):
                 if card_id:
                     if card_id > 0xFFFFFFFF:
                         card_id = card_id >> 8
-                    self.events.put(Message(MessageType.CARD_SCANNED, card_id))
+                    self.events.put(Message(MessageType.CARD_SCANNED, int(card_id)))
                     self.logger.info(f"Scanned card ID: {card_id}")
                     self.stop_event.wait(0.7)
                 else:
