@@ -3,10 +3,11 @@ import queue
 import sys
 import threading
 import tkinter as tk
+from logging.handlers import RotatingFileHandler
 
 from api_clients.ApiWorker import ApiWorker, ApiJobType, ApiJob
 from api_clients.workstations import WorkstationPoller
-from config import VERSION
+from config import VERSION, LOG_FILE
 from pi.card_reader import CardScanner
 from gui.gui import AppGui
 from obj.objects import Workstation, Message, MessageType
@@ -18,7 +19,13 @@ class App:
                             format='%(asctime)s [%(name)s] - %(levelname)s - %(message)s',
                             datefmt="%H:%M:%S",
                             handlers=[
-                                logging.StreamHandler()
+                                logging.StreamHandler(),
+                                RotatingFileHandler(
+                                    LOG_FILE,
+                                    maxBytes=10 * 1024 * 1024,
+                                    backupCount=7,
+                                    encoding="utf-8",
+                                ),
                             ])
         self.logger = logging.getLogger("LEMAC")
         self.logger.info("Initializing LEMAC Application")
