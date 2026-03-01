@@ -45,7 +45,7 @@ class CardScanner(threading.Thread):
                     (status, uid) = self.reader.READER.MFRC522_Anticoll()
                     if status == self.reader.READER.MI_OK:
                         uid_bytes = bytes(uid)  # normalmente 4 ou 5 valores na lista, depende do cartão
-                        print(self.uid_to_formats(uid_bytes))
+                        self.logger.error(self.uid_to_formats(uid_bytes))
                         sleep(1)
 
                 '''card_id = self.reader.read_id_no_block()
