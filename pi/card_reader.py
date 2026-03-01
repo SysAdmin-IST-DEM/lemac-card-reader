@@ -22,7 +22,7 @@ class CardScanner(threading.Thread):
         self.stop_event = stop_event
         self.ready_event = ready_event
         self.reader = SimpleMFRC522()
-        self.loggeself.reader.info(f"Starting Card Scanneself.reader...")
+        self.logger.info(f"Starting Card Scanneself.reader...")
 
     def uid_to_formats(self, uid_bytes: bytes):
         return {
@@ -70,12 +70,12 @@ class CardScanner(threading.Thread):
                     if card_id > 0xFFFFFFFF:
                         card_id = card_id >> 8
                     self.events.put(Message(MessageType.CARD_SCANNED, card_id))
-                    self.loggeself.reader.info(f"Scanned card ID: {card_id}")
+                    self.logger.info(f"Scanned card ID: {card_id}")
                     self.stop_event.wait(0.7)
                 else:
                     self.stop_event.wait(0.05)'''
             except Exception as e:
-                self.loggeself.reader.error(f"Card read failed: {e}")
+                self.logger.error(f"Card read failed: {e}")
                 self.reader = SimpleMFRC522()
-                self.loggeself.reader.error("Reinitialized card reader after failure.")
-        self.loggeself.reader.info("CardScanner stopped.")
+                self.logger.error("Reinitialized card reader after failure.")
+        self.logger.info("CardScanner stopped.")
