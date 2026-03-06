@@ -22,16 +22,7 @@ class CardScanner(threading.Thread):
         self.stop_event = stop_event
         self.ready_event = ready_event
         self.reader = SimpleMFRC522()
-        self.logger.info(f"Starting Card Scanneself.reader...")
-
-    def uid_to_formats(self, uid_bytes: bytes):
-        return {
-            "uid_bytes": " ".join(f"{b:02X}" for b in uid_bytes),
-            "uid_hex": uid_bytes.hex(),
-            "int_be": int.from_bytes(uid_bytes, "big"),
-            "int_le": int.from_bytes(uid_bytes, "little"),
-            "int_rev_be": int.from_bytes(uid_bytes[::-1], "big"),
-        }
+        self.logger.info(f"Starting Card Scanner...")
 
     def run(self):
         while not self.stop_event.is_set():
@@ -40,31 +31,7 @@ class CardScanner(threading.Thread):
                 break
 
             try:
-                (status, tag_type) = self.reader.MFRC522_Request(self.reader.PICC_REQIDL)
-                if status != self.reader.MI_OK:
-                    continue
-
-                (status, uid) = self.reader.MFRC522_Anticoll()
-                if status != self.reader.MI_OK:
-                    continue
-
-                uid4 = uid[:4]
-                self.logger.error("UID:", " ".join(f"{b:02X}" for b in uid4))
-
-                # EXEMPLO: autenticar e ler um bloco (tens de saber qual)
-                block = 8
-                key = [0xFF] * 6  # chave default (muito comum, mas não garantido)
-
-                self.reader.MFRC522_SelectTag(uid)
-                status = self.reader.MFRC522_Auth(self.reader.PICC_AUTHENT1A, block, key, uid)
-                if status == self.reader.MI_OK:
-                    data = self.reader.MFRC522_Read(block)
-                    self.logger.error("BLOCK", block, ":", data)
-                    self.reader.MFRC522_StopCrypto1()
-                else:
-                    self.logger.error("Auth failed")
-
-                '''card_id = self.readeself.reader.read_id_no_block()
+                card_id = self.reader.read_id_no_block()
 
                 if card_id:
                     if card_id > 0xFFFFFFFF:
@@ -73,7 +40,7 @@ class CardScanner(threading.Thread):
                     self.logger.info(f"Scanned card ID: {card_id}")
                     self.stop_event.wait(0.7)
                 else:
-                    self.stop_event.wait(0.05)'''
+                    self.stop_event.wait(0.05)
             except Exception as e:
                 self.logger.error(f"Card read failed: {e}")
                 self.reader = SimpleMFRC522()
