@@ -2,8 +2,12 @@ import logging
 import queue
 import threading
 from enum import Enum
-from time import sleep
-from mfrc522 import SimpleMFRC522
+
+try:
+    from mfrc522 import SimpleMFRC522
+    HAS_HARDWARE = True
+except ImportError:
+    HAS_HARDWARE = False
 
 from obj.objects import Message, MessageType
 
@@ -18,13 +22,20 @@ class CardScanner(threading.Thread):
     def __init__(self, events: queue.Queue, stop_event: threading.Event, ready_event: threading.Event):
         super().__init__()
         self.logger = logging.getLogger("CARD_SCANNER")
+        self.logger.info(f"Starting Card Scanner...")
         self.events = events
         self.stop_event = stop_event
         self.ready_event = ready_event
-        self.reader = SimpleMFRC522()
-        self.logger.info(f"Starting Card Scanner...")
+        if HAS_HARDWARE:
+            self.reader = SimpleMFRC522()
+        else:
+            self.logger.warning("mfrc522 hardware not found. CardScanner will be disabled.")
+
 
     def run(self):
+        if not HAS_HARDWARE:
+            return
+
         while not self.stop_event.is_set():
             self.ready_event.wait()
             if self.stop_event.is_set():

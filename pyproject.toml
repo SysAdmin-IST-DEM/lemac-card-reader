@@ -1,0 +1,12 @@
+[project]
+name = "lemac-card-reader"
+version = "1.1.0"
+description = " Card Scanner for the LEMAC's room"
+requires-python = ">=3.10"
+dependencies = [
+    "requests",
+    "python-dotenv",
+    "Pillow",
+    "mfrc522",
+    "RPi.GPIO"
+]

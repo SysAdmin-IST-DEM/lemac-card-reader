@@ -1,19 +1,27 @@
 from time import sleep
 
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+    HAS_HARDWARE = True
+except ImportError:
+    HAS_HARDWARE = False
 
 BUZZER_PIN = 14
 FREQUENCY = 2000
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(BUZZER_PIN, GPIO.OUT)
-pwm = GPIO.PWM(BUZZER_PIN, FREQUENCY)
+
+if HAS_HARDWARE:
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(BUZZER_PIN, GPIO.OUT)
+    pwm = GPIO.PWM(BUZZER_PIN, FREQUENCY)
 
 def beep(duration=0.1):
+    if not HAS_HARDWARE: return
     pwm.start(80)
     sleep(duration)
     pwm.stop()
 
 def pling():
+    if not HAS_HARDWARE: return
     try:
         pwm.start(50)
 
@@ -26,6 +34,7 @@ def pling():
         GPIO.output(BUZZER_PIN, GPIO.LOW)
 
 def wrong():
+    if not HAS_HARDWARE: return
     try:
         pwm.start(70)
         for freq, dur in [(900, 0.06), (700, 0.06), (500, 0.08), (350, 0.10)]:
@@ -37,16 +46,3 @@ def wrong():
         pwm.stop()
     finally:
         GPIO.output(BUZZER_PIN, GPIO.LOW)
-
-'''
-def beeemp():
-    try:
-        pwm.start(50)
-
-        for freq in [400, 300, 200, 100]:
-            pwm.ChangeFrequency(freq)
-            sleep(0.1)
-
-        pwm.stop()
-    finally:
-        GPIO.output(BUZZER_PIN, GPIO.LOW)'''
