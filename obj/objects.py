@@ -28,6 +28,7 @@ class MessageType(Enum):
     CARD_SCANNED = "card_scanned" # payload = card_id: int
     API_STUDENT_NOT_FOUND = "api_student_not_found" # payload = None
     API_STUDENT_REQUIRES_RENEWAL = "api_student_requires_renewal"  # payload = None
+    API_CARD_ASSIGNING = "api_card_assigning" # payload = None
     API_NO_ACTIVE_ENTRY = "api_no_active_entry" # payload = student_id: str
     API_ACTIVE_ENTRY_FOUND = "api_active_entry_found" # payload = entry_id: int
     API_WORKSTATION_UPDATE = "api_workstation_update" # payload = list[Workstation]

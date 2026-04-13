@@ -86,6 +86,11 @@ class App:
                     thread = threading.Thread(target=sounds.wrong)
                     thread.start()
                     self.root.after(3000, lambda: self.events.put(Message(MessageType.RESET)))
+                elif msg.type == MessageType.API_CARD_ASSIGNING: # Card assigning. Payload: None
+                    self.gui.show_card_assigning()
+                    thread = threading.Thread(target=sounds.wrong)
+                    thread.start()
+                    self.root.after(3000, lambda: self.events.put(Message(MessageType.RESET)))
                 elif msg.type == MessageType.API_NO_ACTIVE_ENTRY: # Show room map. Payload: student_id
                     self.gui.show_room_map(self.workstation_store, msg.payload)
                 elif msg.type == MessageType.API_ACTIVE_ENTRY_FOUND: # Close entry. Payload: entry_id

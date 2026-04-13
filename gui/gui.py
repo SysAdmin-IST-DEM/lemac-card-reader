@@ -97,6 +97,11 @@ class AppGui:
         draw_title_subtitle(self.canvas, "Renewal Required",
                             "Please renew your student registration via LEMAC's website")
 
+    def show_card_assigning(self):
+        clear_screen(self.canvas)
+        draw_title_subtitle(self.canvas, "Card Scanned",
+                            "After monitor's confirmation you can immediately start using your card")
+
     def show_room_map(self, workstation_data: list[Workstation], student_id: str):
         self.room_map.draw(workstation_data, student_id)
 

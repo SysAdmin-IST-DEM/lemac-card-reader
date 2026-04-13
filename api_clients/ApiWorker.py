@@ -50,6 +50,8 @@ class ApiWorker(threading.Thread):
                     self.events.put(Message(MessageType.API_STUDENT_NOT_FOUND))
                 elif response["code"] == "STUDENT_REQUIRES_RENEWAL":
                     self.events.put(Message(MessageType.API_STUDENT_REQUIRES_RENEWAL))
+                elif response["code"] == "CARD_ASSIGNING":
+                    self.events.put(Message(MessageType.API_CARD_ASSIGNING))
                 elif response["code"] == "NO_ACTIVE_ENTRY":
                     self.events.put(Message(MessageType.API_NO_ACTIVE_ENTRY, response["student"]["istId"]))
                 elif response["code"] == "ACTIVE_ENTRY_FOUND":
