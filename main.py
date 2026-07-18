@@ -81,6 +81,11 @@ class App:
                     thread = threading.Thread(target=sounds.wrong)
                     thread.start()
                     self.root.after(3000, lambda: self.events.put(Message(MessageType.RESET)))
+                elif msg.type == MessageType.API_STUDENT_NOT_PERMITTED: # Student not found. Payload: None
+                    self.gui.show_student_not_permitted()
+                    thread = threading.Thread(target=sounds.wrong)
+                    thread.start()
+                    self.root.after(3000, lambda: self.events.put(Message(MessageType.RESET)))
                 elif msg.type == MessageType.API_STUDENT_REQUIRES_RENEWAL: # Student not found. Payload: None
                     self.gui.show_student_requires_renewal()
                     thread = threading.Thread(target=sounds.wrong)

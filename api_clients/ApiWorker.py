@@ -48,6 +48,8 @@ class ApiWorker(threading.Thread):
                 self.logger.info("Fetched active entry from API successfully. CODE: " + response["code"])
                 if response["code"] == "STUDENT_NOT_FOUND":
                     self.events.put(Message(MessageType.API_STUDENT_NOT_FOUND))
+                elif response["code"] == "STUDENT_NOT_PERMITTED":
+                    self.events.put(Message(MessageType.API_STUDENT_NOT_PERMITTED))
                 elif response["code"] == "STUDENT_REQUIRES_RENEWAL":
                     self.events.put(Message(MessageType.API_STUDENT_REQUIRES_RENEWAL))
                 elif response["code"] == "CARD_ASSIGNING":

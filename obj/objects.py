@@ -27,6 +27,7 @@ class MessageType(Enum):
     RESET = "reset" # payload = None
     CARD_SCANNED = "card_scanned" # payload = card_id: int
     API_STUDENT_NOT_FOUND = "api_student_not_found" # payload = None
+    API_STUDENT_NOT_PERMITTED = "api_student_not_permitted" # payload = None
     API_STUDENT_REQUIRES_RENEWAL = "api_student_requires_renewal"  # payload = None
     API_CARD_ASSIGNING = "api_card_assigning" # payload = None
     API_NO_ACTIVE_ENTRY = "api_no_active_entry" # payload = student_id: str
