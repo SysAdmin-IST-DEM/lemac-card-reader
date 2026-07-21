@@ -95,7 +95,7 @@ class AppGui:
     def show_student_not_permitted(self):
         clear_screen(self.canvas)
         draw_title_subtitle(self.canvas, "Student not permitted",
-                            "You are not currently enrolled in a DEM course.")
+                            "You are not currently enrolled in a DEM course")
 
     def show_student_requires_renewal(self):
         clear_screen(self.canvas)
