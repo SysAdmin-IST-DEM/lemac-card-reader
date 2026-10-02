@@ -4,7 +4,8 @@ import threading
 from enum import Enum
 
 try:
-    from mfrc522 import SimpleMFRC522
+    from pn532pi import Pn532Spi, PN532
+    from pn532pi import pn532
     HAS_HARDWARE = True
 except ImportError:
     HAS_HARDWARE = False
@@ -26,14 +27,32 @@ class CardScanner(threading.Thread):
         self.events = events
         self.stop_event = stop_event
         self.ready_event = ready_event
+
         if HAS_HARDWARE:
-            self.reader = SimpleMFRC522()
+            try:
+                spi = Pn532Spi(Pn532Spi.SS0_GPIO8)
+                self.reader = PN532(spi)
+                self.reader.begin()
+
+                versiondata = self.reader.getFirmwareVersion()
+                if not versiondata:
+                    raise RuntimeError("PN532 chip not found via SPI.")
+                self.logger.info("Found chip PN5 {:#x} Firmware ver. {:d}.{:d}".format((versiondata >> 24) & 0xFF,
+                                                                                       (versiondata >> 16) & 0xFF,
+                                                                                       (versiondata >> 8) & 0xFF))
+
+                self.reader.SAMConfig()
+                self.logger.info("PN532 reader initialized successfully over SPI.")
+            except Exception as e:
+                self.logger.error(f"Failed to initialize PN532 hardware: {e}")
+                global HAS_HARDWARE
+                HAS_HARDWARE = False
         else:
             self.logger.warning("mfrc522 hardware not found. CardScanner will be disabled.")
 
 
     def run(self):
-        if not HAS_HARDWARE:
+        if not HAS_HARDWARE or not self.reader:
             return
 
         while not self.stop_event.is_set():
@@ -42,18 +61,24 @@ class CardScanner(threading.Thread):
                 break
 
             try:
-                card_id = self.reader.read_id_no_block()
+                success, uid = self.readPassiveTargetID(pn532.PN532_MIFARE_ISO14443A_106KBPS, timeout=50)
 
-                if card_id:
+                if success and uid:
+                    card_id = int.from_bytes(uid, byteorder='big')
+
                     if card_id > 0xFFFFFFFF:
                         card_id = card_id >> 8
+
                     self.events.put(Message(MessageType.CARD_SCANNED, card_id))
-                    self.logger.info(f"Scanned card ID: {card_id}")
+                    self.logger.info(f"Scanned card ID: {card_id} (UID Hex: {uid.hex().upper()})")
                     self.stop_event.wait(0.7)
                 else:
                     self.stop_event.wait(0.05)
             except Exception as e:
                 self.logger.error(f"Card read failed: {e}")
-                self.reader = SimpleMFRC522()
-                self.logger.error("Reinitialized card reader after failure.")
+                spi = Pn532Spi(Pn532Spi.SS0_GPIO8)
+                self.reader = PN532(spi)
+                self.reader.begin()
+                self.reader.SAMConfig()
+                self.logger.info("Reinitialized PN532 card reader after failure.")
         self.logger.info("CardScanner stopped.")
