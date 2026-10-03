@@ -8,7 +8,7 @@ from logging.handlers import RotatingFileHandler
 from api_clients.ApiWorker import ApiWorker, ApiJobType, ApiJob
 from api_clients.workstations import WorkstationPoller
 from config import VERSION, LOG_FILE
-from pi.card_reader import CardScanner
+from pi.card_reader_mfrc522 import CardScanner
 from gui.gui import AppGui
 from obj.objects import Workstation, Message, MessageType
 import pi.sounds as sounds
