@@ -13,10 +13,6 @@ from gui.gui import AppGui
 from obj.objects import Workstation, Message, MessageType
 import pi.sounds as sounds
 
-from pathlib import Path
-pi_path = Path(__file__).resolve().parent / "pi"
-sys.path.insert(0, str(pi_path))
-
 class App:
     def __init__(self):
         logging.basicConfig(level=logging.DEBUG if "--debug" in sys.argv else logging.INFO,

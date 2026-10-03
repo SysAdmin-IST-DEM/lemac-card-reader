@@ -3,11 +3,9 @@ import queue
 import threading
 from enum import Enum
 
-try:
-    from pn532 import PN532_SPI
-    HAS_HARDWARE = True
-except ImportError:
-    HAS_HARDWARE = False
+from pn532 import PN532_SPI
+HAS_HARDWARE = True
+
 
 from obj.objects import Message, MessageType
 
