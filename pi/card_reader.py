@@ -3,12 +3,9 @@ import queue
 import threading
 from enum import Enum
 
-try:
-    from pn532pi import Pn532Spi, PN532
-    from pn532pi import pn532
-    HAS_HARDWARE = True
-except ImportError:
-    HAS_HARDWARE = False
+from pn532pi import Pn532Spi, PN532
+from pn532pi import pn532
+HAS_HARDWARE = True
 
 from obj.objects import Message, MessageType
 
@@ -48,7 +45,7 @@ class CardScanner(threading.Thread):
                 self.logger.error(f"Failed to initialize PN532 hardware: {e}")
                 HAS_HARDWARE = False
         else:
-            self.logger.warning("mfrc522 hardware not found. CardScanner will be disabled.")
+            self.logger.warning("PN532 hardware not found. CardScanner will be disabled.")
 
 
     def run(self):
