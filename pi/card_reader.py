@@ -3,11 +3,14 @@ import queue
 import threading
 from enum import Enum
 
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-from pn532 import PN532_SPI
-HAS_HARDWARE = True
+try:
+    import sys
+    from pathlib import Path
+    sys.path.append(str(Path(__file__).resolve().parent.parent))
+    from pn532 import PN532_SPI
+    HAS_HARDWARE = True
+except ImportError:
+    HAS_HARDWARE = False
 
 
 from obj.objects import Message, MessageType
