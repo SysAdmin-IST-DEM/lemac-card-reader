@@ -3,8 +3,7 @@ import queue
 import threading
 from enum import Enum
 
-from pn532pi import Pn532Spi, PN532
-from pn532pi import pn532
+from pn532pi import Pn532Spi, Pn532, pn532
 HAS_HARDWARE = True
 
 from obj.objects import Message, MessageType
@@ -29,7 +28,7 @@ class CardScanner(threading.Thread):
         if HAS_HARDWARE:
             try:
                 spi = Pn532Spi(Pn532Spi.SS0_GPIO8)
-                self.reader = PN532(spi)
+                self.reader = Pn532(spi)
                 self.reader.begin()
 
                 versiondata = self.reader.getFirmwareVersion()
