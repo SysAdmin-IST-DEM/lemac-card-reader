@@ -4,7 +4,7 @@ import threading
 from enum import Enum
 
 try:
-    from pn532.pn532 import PN532_SPI
+    from pn532 import PN532_SPI
     HAS_HARDWARE = True
 except ImportError:
     HAS_HARDWARE = False
