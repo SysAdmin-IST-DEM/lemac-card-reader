@@ -70,9 +70,5 @@ class CardScanner(threading.Thread):
                     self.stop_event.wait(0.05)
             except Exception as e:
                 self.logger.error(f"Card read failed: {e}")
-                self.reader = PN532_SPI(debug=False, reset=20, cs=4)
-                ic, ver, rev, support = self.reader.get_firmware_version()
-                self.logger.info(f"Found PN532 with firmware version: {ver}.{rev}")
-                self.reader.SAM_configuration()
                 self.logger.info("Reinitialized PN532 card reader after failure.")
         self.logger.info("CardScanner stopped.")
