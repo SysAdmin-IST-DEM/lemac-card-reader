@@ -46,7 +46,6 @@ class CardScanner(threading.Thread):
                 self.logger.info("PN532 reader initialized successfully over SPI.")
             except Exception as e:
                 self.logger.error(f"Failed to initialize PN532 hardware: {e}")
-                global HAS_HARDWARE
                 HAS_HARDWARE = False
         else:
             self.logger.warning("mfrc522 hardware not found. CardScanner will be disabled.")
