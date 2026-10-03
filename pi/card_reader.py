@@ -3,8 +3,11 @@ import queue
 import threading
 from enum import Enum
 
-from pn532pi import Pn532Spi, Pn532, pn532
-HAS_HARDWARE = True
+try:
+    from pn532 import PN532_SPI
+    HAS_HARDWARE = True
+except ImportError:
+    HAS_HARDWARE = False
 
 from obj.objects import Message, MessageType
 
@@ -27,18 +30,12 @@ class CardScanner(threading.Thread):
 
         if HAS_HARDWARE:
             try:
-                spi = Pn532Spi(Pn532Spi.SS0_GPIO8)
-                self.reader = Pn532(spi)
-                self.reader.begin()
+                self.reader = PN532_SPI(debug=False, reset=20, cs=4)
 
-                versiondata = self.reader.getFirmwareVersion()
-                if not versiondata:
-                    raise RuntimeError("PN532 chip not found via SPI.")
-                self.logger.info("Found chip PN5 {:#x} Firmware ver. {:d}.{:d}".format((versiondata >> 24) & 0xFF,
-                                                                                       (versiondata >> 16) & 0xFF,
-                                                                                       (versiondata >> 8) & 0xFF))
+                ic, ver, rev, support = self.reader.get_firmware_version()
+                print('Found PN532 with firmware version: {0}.{1}'.format(ver, rev))
 
-                self.reader.SAMConfig()
+                self.reader.SAM_configuration()
                 self.logger.info("PN532 reader initialized successfully over SPI.")
             except Exception as e:
                 self.logger.error(f"Failed to initialize PN532 hardware: {e}")
@@ -57,9 +54,9 @@ class CardScanner(threading.Thread):
                 break
 
             try:
-                success, uid = self.readPassiveTargetID(pn532.PN532_MIFARE_ISO14443A_106KBPS, timeout=50)
+                uid = self.reader.read_passive_target(timeout=0.5)
 
-                if success and uid:
+                if uid:
                     card_id = int.from_bytes(uid, byteorder='big')
 
                     if card_id > 0xFFFFFFFF:
@@ -72,9 +69,9 @@ class CardScanner(threading.Thread):
                     self.stop_event.wait(0.05)
             except Exception as e:
                 self.logger.error(f"Card read failed: {e}")
-                spi = Pn532Spi(Pn532Spi.SS0_GPIO8)
-                self.reader = PN532(spi)
-                self.reader.begin()
-                self.reader.SAMConfig()
+                self.reader = PN532_SPI(debug=False, reset=20, cs=4)
+                ic, ver, rev, support = self.reader.get_firmware_version()
+                self.logger.info(f"Found PN532 with firmware version: {ver}.{rev}")
+                self.reader.SAM_configuration()
                 self.logger.info("Reinitialized PN532 card reader after failure.")
         self.logger.info("CardScanner stopped.")
