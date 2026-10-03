@@ -55,7 +55,7 @@ class CardScanner(threading.Thread):
                 break
 
             try:
-                uid = self.reader.read_passive_target(timeout=50)
+                uid = self.reader.read_passive_target(timeout=0.5)
 
                 if uid:
                     card_id = int.from_bytes(uid, byteorder='big')
