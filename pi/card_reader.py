@@ -21,6 +21,7 @@ class CardScanned(Enum):
 
 class CardScanner(threading.Thread):
     def __init__(self, events: queue.Queue, stop_event: threading.Event, ready_event: threading.Event):
+        global HAS_HARDWARE
         super().__init__()
         self.logger = logging.getLogger("CARD_SCANNER")
         self.logger.info(f"Starting Card Scanner...")
